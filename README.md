@@ -22,7 +22,7 @@ values for the rate on the next ten years (2015-2024). I constructed functions f
 calculate rates and predictions for all fifty states as well as the nation as a whole. So e.g. a typical function would look
 like this:
 
-
+```
 def t_hiv(X, y):
 
     results = sm.GLM(y, sm.add_constant(X),
@@ -49,11 +49,12 @@ def t_hiv(X, y):
                                         
     print(results.params[1])
     return pd.concat([X_test, pd.DataFrame(preds)], axis = 1)
-
+```
 
 I applied such a function to all fifty states' data frames, then extracted the 2019 row from each and threw these into a new
 data frame. So for example the Wyoming contribution to the tuberculosis data frame was extracted via:
 
+```
 wy_tuber_df = t_tuberpred(wy.loc[(wy.index > 69) & (wy.index < 105), :]['year_id'],
                       wy.loc[(wy.index > 69) & (wy.index < 105), :]['mx'])    # 'wy' was the
                                                                               # data frame for
@@ -71,7 +72,7 @@ wy_tuber['state'] = 'Wyoming'
 wy_tuber['new_index'] = 49
 
 wy_tuber.set_index('new_index', inplace = True)
-
+```
 
 The results concerning the highest predictions for 2019 were as follows:
 
@@ -104,19 +105,19 @@ Because there was only one row for each county in the new data, as opposed to 10
 (35 years * 3 genders (male, female, both)), I used an outer join to merge the two frames. For example, the case of Alaska
 looked like this:
 
-
+```
 alaska_monies = pd.merge(alaska, moniesdf, how = 'left', left_on = 'location_name',
                         right_on = 'Borough or Census Area')
-
+```
 
 The climate data were entered manually based off of Köppen climate maps of the relevant states. So e.g. the Alaska climate map
 looked like this: https://en.wikipedia.org/wiki/Climate_of_Alaska#/media/File:Alaska_K%C3%B6ppen.svg, and the resulting
 dictionary to fill in climate values in the Alaskan data frame looked like this:
 
-
-\# The following dictionary maps counties to their Köppen climatic types. Obviously,
-\# the zones don't follow county lines with any precision. So for now I'll use slashes
-\# ('/') to separate names when a particular county features multiple climates.
+```
+# The following dictionary maps counties to their Köppen climatic types. Obviously,
+# the zones don't follow county lines with any precision. So for now I'll use slashes
+# ('/') to separate names when a particular county features multiple climates.
 
 ak_clim_dict = {'Aleutians West Census Area': 'Oceanic',
                 'Aleutians East Borough': 'Tundra/Oceanic/Subarctic',
@@ -137,7 +138,7 @@ ak_clim_dict = {'Aleutians West Census Area': 'Oceanic',
                'Matanuska-Susitna Borough': 'Tundra/Dry-summer subarctic/Subarctic',
                'Southeast Fairbanks Census Area': 'Cold semi-arid/Subarctic',
                'Yukon-Koyukuk Census Area': 'Cold semi-arid/Dry-summer subarctic/Subarctic'}
-
+```
 
 Modeling
 Because the population and economic data were largely from 2010, my general strategy was to exclude the observations from
@@ -157,10 +158,13 @@ border matrix) was calculated by hand in the case of Rhode Island and in the cas
 relatively small. In the other cases use was made of a .csv file (https://www.census.gov/geo/reference/county-adjacency.html)
 that lists all the bordering counties for every county in the nation. Moran's I-statistic was calculated according to:
 
+$$
 I = N / W * ΣiΣjwij(xi−x¯)(xj−x¯) / Σi(xi−x¯)^2,
-where N is the number of regions (counties), W is the sum of the entries (0's for non-borderers, 1's for borderers) in the
-border matrix, wij is the entry corresponding to county i and county j (the matrix is symmetric), and xi is the mortality rate
-in county i.
+$$
+
+where $N$ is the number of regions (counties), $W$ is the sum of the entries (0's for non-borderers, 1's for borderers) in the
+border matrix, $w_{ij}$ is the entry corresponding to county $i$ and county $j$ (the matrix is symmetric), and $x_i$ is the
+mortality ratein county $i$.
 
 Alaskan Tuberculosis
 Alaskan tuberculosis shows some spatial correlation among its counties. In addition, there is a negative correlation between
