@@ -158,13 +158,11 @@ border matrix) was calculated by hand in the case of Rhode Island and in the cas
 relatively small. In the other cases use was made of a .csv file (https://www.census.gov/geo/reference/county-adjacency.html)
 that lists all the bordering counties for every county in the nation. Moran's I-statistic was calculated according to:
 
-$$
 I = N / W * ΣiΣjwij(xi−x¯)(xj−x¯) / Σi(xi−x¯)^2,
-$$
 
-where $N$ is the number of regions (counties), $W$ is the sum of the entries (0's for non-borderers, 1's for borderers) in the
-border matrix, $w_{ij}$ is the entry corresponding to county $i$ and county $j$ (the matrix is symmetric), and $x_i$ is the
-mortality ratein county $i$.
+where N is the number of regions (counties), W is the sum of the entries (0's for non-borderers, 1's for borderers) in the
+border matrix, wij is the entry corresponding to county i and county j (the matrix is symmetric), and xi is the
+mortality ratein county i.
 
 Alaskan Tuberculosis
 Alaskan tuberculosis shows some spatial correlation among its counties. In addition, there is a negative correlation between
