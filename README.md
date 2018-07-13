@@ -4,23 +4,24 @@ Capstone Project for General Assembly
 Projecting and Exploring U.S. Mortality from Major Diseases
 N.B. Associated visualizations can be found both at Google Slides
 (https://docs.google.com/presentation/d/1xuLCjb2GQULCUKoz5Yz79QyhbuNVj3Fg7uCVKO_vRhk/edit?usp=sharing) and at my
-public Tableau (https://public.tableau.com/profile/greg2244#!/, then click on "Projecting U.S. Mortality from Major Diseases").
+public Tableau (https://public.tableau.com/profile/greg2244#!/, then click on "Projecting U.S. Mortality from Major
+Diseases").
 
 This project examines mortality rates from six major infectious diseases (tuberculosis, HIV/AIDS, lower respiratory disease,
 meningitis, hepatitis (A), and diarrheal disease). The primary dataset is courtesy of the University of Washington's Institute
 for Health Metrics and Evaluation and is available publicly at
-http://ghdx.healthdata.org/record/united-states-infectious-disease-mortality-rates-county-1980-2014. Let's note here also that,
-though all of these diseases are officially communicable, transmission between human beings often requires a particularly
-intimate sort of contact. Contracting HIV, for example, requires absorption of an infected person's bodily fluids, while
-hepatitis is often transmitted through fecal matter.
+http://ghdx.healthdata.org/record/united-states-infectious-disease-mortality-rates-county-1980-2014. Let's note here also
+that, though all of these diseases are officially communicable, transmission between human beings often requires a
+particularly intimate sort of contact. Contracting HIV, for example, requires absorption of an infected person's bodily
+fluids, while hepatitis is often transmitted through fecal matter.
 
-The IHME dataset comprises average mortality rates by sex for these six diseases between the years 1980 and 2014. My first goal
-was to make projections about how rates would progress, and in particular to estimate which states would have the highest rates
-for these diseases in 2019. To this end I used a gamma regression, implemented in statsmodels.api with its GLM (generalized
-linear models) module. I simply took in the years and mortality rates from the dataset and then used the regression to predict
-values for the rate on the next ten years (2015-2024). I constructed functions for this purpose so that I could quickly
-calculate rates and predictions for all fifty states as well as the nation as a whole. So e.g. a typical function would look
-like this:
+The IHME dataset comprises average mortality rates by sex for these six diseases between the years 1980 and 2014. My first
+goal was to make projections about how rates would progress, and in particular to estimate which states would have the highest
+rates for these diseases in 2019. To this end I used a gamma regression, implemented in statsmodels.api with its GLM
+(generalized linear models) module. I simply took in the years and mortality rates from the dataset and then used the
+regression to predict values for the rate on the next ten years (2015-2024). I constructed functions for this purpose so that
+I could quickly calculate rates and predictions for all fifty states as well as the nation as a whole. So e.g. a typical
+function would look like this:
 
 ```
 def t_hiv(X, y):
@@ -141,6 +142,7 @@ ak_clim_dict = {'Aleutians West Census Area': 'Oceanic',
 ```
 
 Modeling
+
 Because the population and economic data were largely from 2010, my general strategy was to exclude the observations from
 before 2006 in constructing my models. In all cases I experimented with linear regressions and random forests, which were
 constructed on training sets and scored on test sets. Here I made use of scikit-learn's 'linear_model' and 'ensemble' modules.
@@ -153,10 +155,11 @@ with a mean squared error loss function and the 'adam' optimizer.
 
 Finally, the counties of each state were examined for spatial correlation on the simple metric of 1's for bordering counties
 and 0's otherwise. Spatially correlated data were discovered in the cases of Alaska (vis-à-vis tuberculosis) and Mississippi
-(vis-à-vis lower respiratory diseases), with a marginal figure for California (vis-à-vis hepatitis). The Moran I-statistic (and
-border matrix) was calculated by hand in the case of Rhode Island and in the case of Alaska, since the numbers of counties were
-relatively small. In the other cases use was made of a .csv file (https://www.census.gov/geo/reference/county-adjacency.html)
-that lists all the bordering counties for every county in the nation. Moran's I-statistic was calculated according to:
+(vis-à-vis lower respiratory diseases), with a marginal figure for California (vis-à-vis hepatitis). The Moran I-statistic
+(and border matrix) was calculated by hand in the case of Rhode Island and in the case of Alaska, since the numbers of
+counties were relatively small. In the other cases use was made of a .csv file (https://www.census.gov/geo/reference/county-
+adjacency.html) that lists all the bordering counties for every county in the nation. Moran's I-statistic was calculated
+according to:
 
 I = N / W * ΣiΣjwij(xi−x¯)(xj−x¯) / Σi(xi−x¯)^2,
 
@@ -165,6 +168,7 @@ border matrix, wij is the entry corresponding to county i and county j (the matr
 mortality ratein county i.
 
 Alaskan Tuberculosis
+
 Alaskan tuberculosis shows some spatial correlation among its counties. In addition, there is a negative correlation between
 the mortality rate and income level. The Kusilvak Census Area and, to a lesser extent, the Bethel Census Area, stand out.
 
@@ -173,16 +177,17 @@ peoples in these areas. Kusilvak is roughly 93% Native American
 (https://en.wikipedia.org/wiki/Kusilvak_Census_Area,_Alaska#Demographics), while Bethel is roughly 82% Native American
 (https://en.wikipedia.org/wiki/Bethel_Census_Area,_Alaska#Demographics). Kusilvak is last in the state in per capita income.
 
-There is a corresponding lack of infrastructure in these areas as well. Indeed, these western areas of the state are completely
-inaccessible by road (http://www.alaska-map.org/road-map.htm).
+There is a corresponding lack of infrastructure in these areas as well. Indeed, these western areas of the state are
+completely inaccessible by road (http://www.alaska-map.org/road-map.htm).
 
 When we put all of these factors together, we begin to understand why the Alaskan mortality rate from tubercuosis is so high.
 It is also worth noting here that TB used to be the #1 killer in Alaska in the earlier part of the twentieth century.
 
-The underlying factor seems to be access to modern medicine and modern information about the disease. But this factor shows its
-head, in our case, in the form of location and economic data.
+The underlying factor seems to be access to modern medicine and modern information about the disease. But this factor shows
+its head, in our case, in the form of location and economic data.
 
 Floridian HIV
+
 The most interesting phenomenon here is Union County, which has some of the highest mortality rates from several diseases in
 the nation. As it happens, Union County is home to a very large prison and hospital, which is the major factor in accounting
 for the high HIV mortality rate. The county itself has only around 15000 people, while the prison houses over 2000 inmates
@@ -190,19 +195,22 @@ for the high HIV mortality rate. The county itself has only around 15000 people,
 (https://www.cdc.gov/hiv/group/correctional.html).
 
 Mississippian Lower Respiratory Disease
+
 Lower Respiratory Disease is of course a major killer worldwide. What stands out in Mississippi is that there is a great
-disparity between the rate for men and the rate for women, with the mortality rate for men being significantly higher. A recent
-report (https://msdh.ms.gov/msdhsite/_static/resources/4775.pdf) shows that Mississippi has also unusually high rates of
-obesity, smoking, and cardiovascular disease. In fact this last is the highest in the nation. Smoking is more common among men
-than women in every state except Wyoming
-(https://www.kff.org/other/state-indicator/smoking-adults-by-gender/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D).
+disparity between the rate for men and the rate for women, with the mortality rate for men being significantly higher. A
+recent report (https://msdh.ms.gov/msdhsite/\_static/resources/4775.pdf) shows that Mississippi has also unusually high rates
+of obesity, smoking, and cardiovascular disease. In fact this last is the highest in the nation. Smoking is more common among
+men than women in every state except Wyoming
+(https://www.kff.org/other/state-indicator/smoking-adults-by-gender/?
+currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D).
 
 There is also a mild spatial relationship among Mississippi's counties vis-à-vis lower respiratory disease. Very generally,
-rates are higher in the south and lower in the north. Speculation: Because the university towns of Oxford and Starkville are in
-the northern part of the state, there may be more awareness of connections between diet/smoking and respiratory disease. By
+rates are higher in the south and lower in the north. Speculation: Because the university towns of Oxford and Starkville are
+in the northern part of the state, there may be more awareness of connections between diet/smoking and respiratory disease. By
 contrast, residents in the gulf region of the state may have more influence from New Orleans as regards lifestyle.
 
 Louisianan Meningitis
+
 This one remains the most obscure to me. The only major correlation I can find is a negative one with year, which means only
 that mortality rates from meningitis have dropped significantly in Louisiana over the last forty years. Why exactly it is
 Louisiana that has the highest rates among all states I cannot ascertain. There is no correlation between mortality rate and
@@ -219,6 +227,7 @@ factor for the fungal variety (https://en.wikipedia.org/wiki/Meningitis), which 
 Louisiana is also relatively high.
 
 Californian Hepatitis
+
 Sex is a significant factor here, with men having significantly higher rates than women. Hepatitis A is often spread through
 fecal contact, so issues like sanitation and homelessness are important considerations here. San Diego recently had an
 outbreak, and San Francisco County is over-represented in our dataset.
@@ -227,13 +236,16 @@ Climate is mildly relevant here: The cold-summer Mediterranean climate is negati
 climate comprises the northern part of the state that's outside of the central valley.
 
 Rhode Islander Diarrheal Disease
+
 The main factor here is a positive correlation with year, as rates have been going up sharply. Climate and county are
 marginally relevant, but the major point that calls our for explanation is the rising rate. My speculative hypothesis here is
 that this is due to sharply rising rates of antibiotic and opioid use, which often have diarrhea as side effects. Diarrhea can
 lead to fatal results through extreme dehydration, especially in young children, who tend to have more vulnerable organs.
 
 Conclusions and Future Work
+
 Conclusions
+
 If there be one general lesson learned, it is that explanations for mortality rates are highly complex and idiosyncratic. In
 the course of my exploration, very often I would lift up a rock and discover something interesting about one of the six
 diseases or about some county's demographics, only to realize that the newly won knowledge simply raised more questions. It is
@@ -241,38 +253,45 @@ meet to bear in mind that there are often many layers of explanation, and how de
 contextual matter. Here are some facts that I think our work has explained, some more deeply than others:
 
 Tuberculosis in Alaska:
+
 Because tuberculosis has a pedigree of high mortality in Alaska, today's remote areas in the region with low-income levels and
 high native populations are likelier to have higher mortality rates from TB than other areas. Tuberculosis is still the #1
 cause of human death from infectious disease (https://www.nature.com/articles/nrmicro.2018.8).
 
 HIV in Florida:
-A state's average mortality rate, when that average is taken over counties (so that all counties, as opposed to all deaths, are
-measured equally), can be significantly affected by small populations with unusually high mortality rates. Union County is such
-a county because of its high prison population.
+
+A state's average mortality rate, when that average is taken over counties (so that all counties, as opposed to all deaths,
+are measured equally), can be significantly affected by small populations with unusually high mortality rates. Union County is
+such a county because of its high prison population.
 
 Lower Respiratory Diseases in Mississippi:
+
 The connection between certain lifestyle patterns–most especially, smoking–and respiratory disease is well documented, but not
 universally accepted. Mississippi has a high rates for smoking and poor diet, and there is evidence that the southern part of
-the state has higher mortality rates for LRD than the northern part. This may be the result of a better educated populace (note
-the locations of the University of Mississippi (Oxford) and Mississippi State University (Starkville)) in the north relative to
-the south.
+the state has higher mortality rates for LRD than the northern part. This may be the result of a better educated populace
+(note the locations of the University of Mississippi (Oxford) and Mississippi State University (Starkville)) in the north
+relative to the south.
 
 Meningitis in Louisiana:
+
 Meningitis mortality rates in Louisiana have declined dramatically over the last forty years, but rates are still high.
 Relatively high rates of HIV (which is linked with fungal meningitis) and relatively large numbers of young children (who are
 most susceptible to the disease) are likely part of the full explanation.
 
 Hepatitis in California:
-Because hepatitis is often transmitted through fecal matter, hepatitis can be a major killer in areas of great urbanization and
-poor sanitation. Thus e.g. there are many millions of sufferers in southern and southeastern Asia
+
+Because hepatitis is often transmitted through fecal matter, hepatitis can be a major killer in areas of great urbanization
+and poor sanitation. Thus e.g. there are many millions of sufferers in southern and southeastern Asia
 (http://www.searo.who.int/india/topics/hepatitis/en/). Dense urban areas in California, like San Francisco and, more recently,
 San Diego, seem especially prone to outbreaks. Mortality rates are lower in the cooler climatic zones.
 
 Diarrheal Diseases in Rhode Island:
+
 Deaths from diarrhea have been on a significant incline nationally over the last thirty years. We have speculated here that
 increased use of antibiotics and opioids, especially by the elderly, have contributed to this rise.
 
 Future Work
+
 Perhaps it goes without saying that there is far more that could be examined using this dataset. I focused only on the states
 with the highest predictions in 2019 for mortality rates of the six diseases. One could equally well be interested in the
 states with the lowest rates and in what accounts for those. Moreover, because of the peculiar combinations of climatic,
@@ -283,7 +302,8 @@ which the explanation must surely proceed along other lines.
 
 Furthermore, whatever stories I have succeeded in uncovering are themselves incomplete. The national spike (though modest) in
 hepatitis around 2000 demands more explanation, as does why Louisiana leads the nation (or likely will) in meningitis
-mortality. Climatic considerations are largely absent from my explanations, but perhaps there is more to be said there as well.
+mortality. Climatic considerations are largely absent from my explanations, but perhaps there is more to be said there as
+well.
 
 Another point to be noted is that monetary factors are likely not ultimate causes. Though there is indeed a negative
 correlation between e.g. median county income in Louisiana and mortality rate from meningitis, there is no reason to suppose
